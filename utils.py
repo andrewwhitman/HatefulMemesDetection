@@ -1,14 +1,17 @@
 # imports
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_curve, precision_recall_curve, auc, plot_confusion_matrix
 import matplotlib.pyplot as plt
+import numpy as np
 from pandas import DataFrame
+from string import punctuation
+from nltk import word_tokenize
 
 # functions
 def evaluate(model, X_tr, y_tr, X_te, y_te, grid_search=False, save_fig_path=False):
     """
     Calculate classification metrics for train and test data given a fitted model.
     Plot the confusion matrix, ROC curve, and precision-recall curve for test data.
-    ROC curve plotting code inspired by https://github.com/learn-co-curriculum/dsc-roc-curves-and-auc from Flatiron School
+    ROC curve plotting code derived from Flatiron School's https://github.com/learn-co-curriculum/dsc-roc-curves-and-auc
     
     Inputs:
         model: sklearn-like model object
@@ -114,5 +117,70 @@ def evaluate(model, X_tr, y_tr, X_te, y_te, grid_search=False, save_fig_path=Fal
     if grid_search:
         print(f"\nBest Parameters\n{model.best_params_}")
         results = DataFrame(model.cv_results_)
-        display(results.sort_values('rank_test_f1'))
-        return model
+        display(results.sort_values('rank_test_roc_auc'))
+
+
+def generate_glove(vocab, dim=300):
+    """
+    Derived from Flatiron School's https://github.com/learn-co-curriculum/dsc-classification-with-word-embeddings-codealong
+    """
+    glove = {}
+    with open(f'../data/glove.6B/glove.6B.{dim}d.txt', 'rb') as f:
+        for line in f:
+            parts = line.split()
+            word = parts[0].decode('utf-8')
+            if word in vocab:
+                vector = np.array(parts[1:], dtype=np.float32)
+                glove[word] = vector
+    return glove
+
+
+def strip_punctuation(doc, glove):
+    """
+    Docstring to come
+    """
+    for token in doc:
+        if token not in glove:
+            yield token.strip(punctuation)
+        else:
+            yield token
+
+# classes
+class W2vTokenizer(object):
+    """
+    Derived from Flatiron School's https://github.com/learn-co-curriculum/dsc-classification-with-word-embeddings-codealong
+    """
+    def __init__(self, w2v):
+        # Takes in a dictionary of words and vectors as input
+        self.w2v = w2v
+    
+    # Note: Even though it doesn't do anything, it's required that this object implement a fit method or else
+    # it can't be used in a scikit-learn pipeline  
+    def fit(self, X, y):
+        return self
+            
+    def transform(self, X):
+        return X.map(word_tokenize).map(lambda x: list(strip_punctuation(x, self.w2v)))
+
+
+class W2vVectorizer(object):
+    """
+    Derived from Flatiron School's https://github.com/learn-co-curriculum/dsc-classification-with-word-embeddings-codealong
+    """
+    def __init__(self, w2v):
+        # Takes in a dictionary of words and vectors as input
+        self.w2v = w2v
+        if len(w2v) == 0:
+            self.dimensions = 0
+        else:
+            self.dimensions = len(w2v[next(iter(w2v))])
+    
+    # Note: Even though it doesn't do anything, it's required that this object implement a fit method or else
+    # it can't be used in a scikit-learn pipeline  
+    def fit(self, X, y):
+        return self
+            
+    def transform(self, X):
+        return np.array([np.mean([self.w2v[token] for token in doc if token in self.w2v]
+                                 or [np.zeros(self.dimensions)], axis=0)
+                         for doc in X])
