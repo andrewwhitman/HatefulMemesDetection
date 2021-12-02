@@ -1,6 +1,7 @@
 # Data files 
 data/raw/
 data/compressed/
+data/glove.6B/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
