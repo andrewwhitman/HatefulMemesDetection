@@ -31,10 +31,6 @@ def evaluate(model, X_tr, y_tr, X_te, y_te, grid_search=False, save_fig_path=Fal
             The path to save the visualizations
             False: don't save the visualizations
             str: save the visualizations to the path (also renames them to "Holdout Data")
-        
-    Outputs:
-        model: sklearn-like model object
-            The model chosen by the grid search based on the best CV score.
     """
     
     # predictions
@@ -52,27 +48,18 @@ def evaluate(model, X_tr, y_tr, X_te, y_te, grid_search=False, save_fig_path=Fal
     # predict all 1's
     dummy_preds = sum(y_te==1)/len(y_te)
     
-    
+    # metrics
     print("Training Metrics")
-    # Accuracy
     print(f"Accuracy: {accuracy_score(y_tr, trn_preds):.3f}")
-    # Precision
     print(f"Precision: {precision_score(y_tr, trn_preds):.3f}")
-    # Recall
     print(f"Recall: {recall_score(y_tr, trn_preds):.3f}")
-    # f1
     print(f"f1: {f1_score(y_tr, trn_preds):.3f}")
     print('-'*10)
     print("Testing Metrics")
-    # Accuracy
     print(f"Accuracy: {accuracy_score(y_te, tst_preds):.3f}")
-    # Precision
     print(f"Precision: {precision_score(y_te, tst_preds):.3f}")
-    # Recall
     print(f"Recall: {recall_score(y_te, tst_preds):.3f}")
-    # f1
     print(f"f1: {f1_score(y_te, tst_preds):.3f}")
-    
     
     # create fig, axes
     fig, (ax1, ax2, ax3) = plt.subplots(3, figsize=(8, 18))
@@ -106,14 +93,14 @@ def evaluate(model, X_tr, y_tr, X_te, y_te, grid_search=False, save_fig_path=Fal
     ax3.text(x=0.05, y=0.15, s=pr_auc_text, fontsize=14)
     ax3.legend(loc='lower left', fontsize=14)
 
-    # save figs
+    # save figs, rename to Holdout Data
     if save_fig_path:
         ax1.set_title('Confusion Matrix for Holdout Data')
         ax2.set_title('Receiver operating characteristic (ROC) Curve for Holdout Data')
         ax3.set_title('Precision-Recall Curve for Holdout Data')
         fig.savefig(save_fig_path)
     
-    # display grid search results
+    # display grid search results, sort by roc_auc
     if grid_search:
         print(f"\nBest Parameters\n{model.best_params_}")
         results = DataFrame(model.cv_results_)
@@ -122,7 +109,17 @@ def evaluate(model, X_tr, y_tr, X_te, y_te, grid_search=False, save_fig_path=Fal
 
 def generate_glove(vocab, dim=300):
     """
+    Generate word vectors from a pre-trained word embedding, like GloVe.
     Derived from Flatiron School's https://github.com/learn-co-curriculum/dsc-classification-with-word-embeddings-codealong
+
+    Inputs:
+        vocab: collection (set, list, tuple, dict)
+            The vocabulary, or unique tokens, of a corpus.
+        dim: int, default=300
+            The length of the word vectors. Specifies which file to read.
+    Output:
+        glove: dict
+            Maps a token to a {dim}-dimensional word embedding
     """
     glove = {}
     with open(f'../data/glove.6B/glove.6B.{dim}d.txt', 'rb') as f:
@@ -135,12 +132,21 @@ def generate_glove(vocab, dim=300):
     return glove
 
 
-def strip_punctuation(doc, glove):
+def strip_punctuation(doc, embeddings):
     """
-    Docstring to come
+    Remove leading and trailing punctuation from document tokens not found in a word embedding.
+
+    Inputs:
+        doc: list-like
+            A document which has been tokenized.
+        embeddings: collection
+            A collection of tokens from a pre-trained word embedding, like GLoVe
+    Output:
+        token: str
+            The output comes from yielding, rather than returning, token(s). This results in a generator.
     """
     for token in doc:
-        if token not in glove:
+        if token not in embeddings:
             yield token.strip(punctuation)
         else:
             yield token
@@ -149,14 +155,19 @@ def strip_punctuation(doc, glove):
 # classes
 class W2vTokenizer(object):
     """
+    Tokenize a document to prepare for vectorization via word embeddings. Compatible with scikit-learn Pipelines.
     Derived from Flatiron School's https://github.com/learn-co-curriculum/dsc-classification-with-word-embeddings-codealong
+
+    Parameters:
+        w2v: dict
+            A dictionary of words and vectors from a pre-trained word embedding, like GloVe
+    Methods:
+        fit: dummy method required for pipeline functionality
+        transform: tokenize a document
     """
     def __init__(self, w2v):
-        # Takes in a dictionary of words and vectors as input
         self.w2v = w2v
     
-    # Note: Even though it doesn't do anything, it's required that this object implement a fit method or else
-    # it can't be used in a scikit-learn pipeline  
     def fit(self, X, y):
         return self
             
@@ -166,21 +177,26 @@ class W2vTokenizer(object):
 
 class W2vVectorizer(object):
     """
+    Vectorize a tokenized document using word embeddings.
     Derived from Flatiron School's https://github.com/learn-co-curriculum/dsc-classification-with-word-embeddings-codealong
+
+    Parameters:
+        w2v: dict
+            A dictionary of words and vectors from a pre-trained word embedding, like GloVe
+    Methods:
+        fit: dummy method required for pipeline functionality
+        transform: vectorize a document by calculating its mean word vector
     """
     def __init__(self, w2v):
-        # Takes in a dictionary of words and vectors as input
         self.w2v = w2v
         if len(w2v) == 0:
             self.dimensions = 0
         else:
             self.dimensions = len(w2v[next(iter(w2v))])
-    
-    # Note: Even though it doesn't do anything, it's required that this object implement a fit method or else
-    # it can't be used in a scikit-learn pipeline  
+
     def fit(self, X, y):
         return self
-            
+    # 
     def transform(self, X):
         return np.array([np.mean([self.w2v[token] for token in doc if token in self.w2v]
                                  or [np.zeros(self.dimensions)], axis=0)
