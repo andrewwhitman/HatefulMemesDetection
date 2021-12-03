@@ -1,28 +1,29 @@
 # Hateful Memes Detection
 ![Mean memes from https://ai.facebook.com/blog/hateful-memes-challenge-and-data-set](https://scontent-ort2-1.xx.fbcdn.net/v/t39.2365-6/96215346_2581440138810047_7336682629883756544_n.png?_nc_cat=107&ccb=1-5&_nc_sid=ad8a9d&_nc_ohc=p5xSTm2IWxMAX-q_C84&_nc_ht=scontent-ort2-1.xx&oh=e5c1e3dc76873b31dc7303cb1899e3cb&oe=61AE36B4)
-Photo from [Facebook AI](https://ai.facebook.com/blog/hateful-memes-challenge-and-data-set)
+Photo from [Facebook AI](https://ai.facebook.com/blog/hateful-memes-challenge-and-data-set). These are examples of "mean" memes, not actual hateful memes, which would be distasteful to display.
 
 ## Overview
 
-This repo aims to solve this problem using that data and performed how well.
+Moderating online content, particularly the *multimodal* combination of text and images in the form of memes, is a large and difficult problem for social media and society. This project uses a curated dataset of memes from Facebook AI to detect whether a meme is hateful or not based on its content. The model accurately classifies 62% of memes, with an ROC-AUC of 0.579.
 
 
 ## Business and Data Understanding
 
-Project context with at least one citation for domain understanding.
-The data comes from [Facebook AI's Hateful Memes Challenge](https://hatefulmemeschallenge.com/).
+Hate speech in the form of hateful memes is a challenging problem for automatic detection due to its multimodal combination of text and images. The semantic value of a meme is determined by both the text and image and their interaction. Facebook AI has curated a dataset of memes using human annotators to determine a meme's hateful classification. Benign confounders have been created and added to the dataset. These confounders take a meme that is hateful and either changes the text or image to switch the classification from hateful to not hateful. See this [paper](https://arxiv.org/pdf/2005.04790.pdf) for further details on the curation of the dataset.
 
-See the [Reproducibility](#Reproducibility "Go to Reproducibility") section of this README to access the data.
+Distinguishing between the two classes is a priority for automatic detection as the consequences of false positives and false negatives are both troublesome. If content removal is based on such detection, removing user content that isn't hateful and keeping up truly hateful content will both be an issue. Therefore, the metrics to prioritize are accuracy and ROC-AUC.
+
+The data can be retrieved from [Facebook AI's Hateful Memes Challenge](https://hatefulmemeschallenge.com/). See the [Reproducibility](#Reproducibility "Go to Reproducibility") section of this README to access the data.
 
 
 ## Modeling and Evaluation
 
-Models x, y, and z. Final model compared to baseline.
+First, only the textual component of a meme is modeled using Naive Bayes classifiers based on frequency counts and TF-IDF, as well as logistic regression and random forest models based on GloVe word embeddings. The best-performing model of these is a Multinomial Naive Bayes classifier used on text that has been vectorized with frequency counts. This model achieves an accuracy score of 62% on holdout data, while a base rate classification based on the target distribution in the training set achieves an accuracy score of 53% on holdout data.
 
 
 ## Conclusions
 
-Recommendations
+The final model can be used in an automatic detection system for hateful memes. Based on the preferences of the end user, the decision boundary can be chosen to prioritize the prevention of either false positives or false negatives. Continued work to incorporate the visual content of a meme is a next step for the project.
 
 
 ## Information
@@ -31,9 +32,9 @@ Check out this [notebook](https://github.com/andrewwhitman/HatefulMemesDetection
 
 ## Reproducibility
 
-To download the data, visit the [challenge website](https://hatefulmemeschallenge.com/#download) and agree to the dataset license by filling out the form. The data (3.93 GB) will be downloaded as a compressed `.zip` folder. Unzip and store the contents (includes both an `img` folder and five `.jsonl` files) in a folder named `raw`. Move the `raw` folder into the `data/` directory of this repository.
+To download the data, visit the [challenge website](https://hatefulmemeschallenge.com/#download) and agree to the dataset license by filling out the form. The data (3.93 GB) will be downloaded as a compressed `.zip` folder. Unzip and store the contents (includes both an `img` directory and five `.jsonl` files) in a directory named `raw`. Move `raw` into the `data/` directory of this repository.
 
-In addition to the dataset, GloVe embeddings need downloaded. Follow this [link](https://huggingface.co/stanfordnlp/glove/resolve/main/glove.6B.zip) to download the compressed `glove.6B.zip` folder. Unzip and store the contents in a folder named `glove.6B`. Move the `glove.6B` folder into the `data/` directory of this repository.
+In addition to the dataset, GloVe embeddings need downloaded. Follow this [link](https://huggingface.co/stanfordnlp/glove/resolve/main/glove.6B.zip) to download the compressed `glove.6B.zip` folder. Unzip and store the contents in a directory named `glove.6B`. Move `glove.6B` into the `data/` directory of this repository.
 
 To reproduce an environment with the necessary dependencies locally on your computer, use the `environment.yml` in this repo with `conda`. For `pip` compatibility, use the `requirements.txt` to install the dependencies.
 
