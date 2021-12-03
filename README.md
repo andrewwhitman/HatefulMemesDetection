@@ -46,10 +46,10 @@ To reproduce an environment with the necessary dependencies locally on your comp
 ├── notebooks                      <- contains additional notebooks for data exploration and modeling
 │   └── ...
 ├── .gitignore                     <- specifies files/directories to ignore
-├── environment.yml                <- reproduces the environment
-├── HatefulMemesDetection.ipynb    <- notebook detailing the data science process containing code and narrative
-├── presentation.pdf               <- presentation slides for a business audience
+├── HatefulMemesDetection.ipynb    <- details the data science process with code and narrative
 ├── README.md                      <- Top-level README
+├── environment.yml                <- reproduces the environment
+├── presentation.pdf               <- presentation slides for a business audience
 ├── requirements.txt               <- reproduces the environment
 └── utils.py                       <- contains helper functions and classes
 
