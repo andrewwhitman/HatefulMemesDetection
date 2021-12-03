@@ -145,6 +145,7 @@ def strip_punctuation(doc, glove):
         else:
             yield token
 
+
 # classes
 class W2vTokenizer(object):
     """
