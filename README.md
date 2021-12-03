@@ -4,24 +4,25 @@ Photo from [Facebook AI](https://ai.facebook.com/blog/hateful-memes-challenge-an
 
 ## Overview
 
-This repo
+This repo aims to solve this problem using that data and performed how well.
 
 
 ## Business and Data Understanding
 
+Project context with at least one citation for domain understanding.
 The data comes from [Facebook AI's Hateful Memes Challenge](https://hatefulmemeschallenge.com/).
 
-See the [Reproducibility](##Reproducibility "Go to Reproducibility") section of this README to access the data.
+See the [Reproducibility](#Reproducibility "Go to Reproducibility") section of this README to access the data.
 
 
 ## Modeling and Evaluation
 
-Text here
+Models x, y, and z. Final model compared to baseline.
 
 
 ## Conclusions
 
-Text here
+Recommendations
 
 
 ## Information
