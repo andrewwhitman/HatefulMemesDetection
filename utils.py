@@ -10,7 +10,7 @@ from nltk import word_tokenize
 def evaluate(model, X_tr, y_tr, X_te, y_te, grid_search=False, save_fig_path=False):
     """
     Calculate classification metrics for train and test data given a fitted model.
-    Plot the confusion matrix, ROC curve, and precision-recall curve for test data.
+    Plot the confusion matrix and ROC curve for test data.
     ROC curve plotting code derived from Flatiron School's https://github.com/learn-co-curriculum/dsc-roc-curves-and-auc
     
     Inputs:
@@ -41,12 +41,6 @@ def evaluate(model, X_tr, y_tr, X_te, y_te, grid_search=False, save_fig_path=Fal
     # roc auc calcs
     fpr, tpr, _ = roc_curve(y_te, tst_proba)
     roc_auc_text = f"AUC score: {auc(fpr, tpr):.3f}"
-
-    # precision-recall curve calcs
-    precision_c, recall_c, _ = precision_recall_curve(y_te, tst_proba)
-    pr_auc_text = f"AUC score: {auc(recall_c, precision_c):.3f}"
-    # predict all 1's
-    dummy_preds = sum(y_te==1)/len(y_te)
     
     # metrics
     print("Training Metrics")
@@ -62,7 +56,7 @@ def evaluate(model, X_tr, y_tr, X_te, y_te, grid_search=False, save_fig_path=Fal
     print(f"f1: {f1_score(y_te, tst_preds):.3f}")
     
     # create fig, axes
-    fig, (ax1, ax2, ax3) = plt.subplots(3, figsize=(8, 18))
+    fig, (ax1, ax2) = plt.subplots(2, figsize=(8, 12))
     
     # confusion matrix
     plot_confusion_matrix(model, X_te, y_te, cmap='Blues', ax=ax1)
@@ -82,17 +76,6 @@ def evaluate(model, X_tr, y_tr, X_te, y_te, grid_search=False, save_fig_path=Fal
     ax2.text(x=0.72, y=0.15, s=roc_auc_text, fontsize=14)
     ax2.legend(loc='lower right', fontsize=14)
 
-    # precision-recall curve
-    ax3.plot(recall_c, precision_c, color='darkorange', lw=2, label='Precision-Recall curve')
-    ax3.plot([0, 1], [dummy_preds, dummy_preds], color='navy', lw=2, linestyle='--')
-    ax3.set_title('Precision-Recall Curve for Test Data')
-    ax3.set_xlabel('Recall')
-    ax3.set_ylabel('Precision')
-    ax3.set_xlim([0.0, 1.0])
-    ax3.set_ylim([0.0, 1.05])
-    ax3.text(x=0.05, y=0.15, s=pr_auc_text, fontsize=14)
-    ax3.legend(loc='lower left', fontsize=14)
-
     # save figs, rename to Holdout Data
     if save_fig_path:
         ax1.set_title('Confusion Matrix for Holdout Data')
@@ -107,7 +90,7 @@ def evaluate(model, X_tr, y_tr, X_te, y_te, grid_search=False, save_fig_path=Fal
         display(results.sort_values('rank_test_roc_auc'))
 
 
-def generate_glove(vocab, dim=300):
+def generate_glove(vocab, path='data/glove.6B/glove.6B.300d.txt'):
     """
     Generate word vectors from a pre-trained word embedding, like GloVe.
     Derived from Flatiron School's https://github.com/learn-co-curriculum/dsc-classification-with-word-embeddings-codealong
@@ -115,14 +98,14 @@ def generate_glove(vocab, dim=300):
     Inputs:
         vocab: collection (set, list, tuple, dict)
             The vocabulary, or unique tokens, of a corpus.
-        dim: int, default=300
-            The length of the word vectors. Specifies which file to read.
+        path: str, default='data/glove.6B/glove.6B.300d.txt'
+            The relative path to the downloaded GloVe vectors. Default is 300 dimensional word vectors.
     Output:
         glove: dict
-            Maps a token to a {dim}-dimensional word embedding
+            Maps a token to a word embedding
     """
     glove = {}
-    with open(f'../data/glove.6B/glove.6B.{dim}d.txt', 'rb') as f:
+    with open(path, 'rb') as f:
         for line in f:
             parts = line.split()
             word = parts[0].decode('utf-8')
