@@ -2,6 +2,9 @@
 ![Mean memes from https://ai.facebook.com/blog/hateful-memes-challenge-and-data-set](https://github.com/andrewwhitman/HatefulMemesDetection/blob/main/images/facebook_mean_memes.png)
 Photo from [Facebook AI](https://ai.facebook.com/blog/hateful-memes-challenge-and-data-set). These are examples of "mean" memes, not actual hateful memes, which would be distasteful to display.
 
+## Author
+Andrew Whitman
+
 ## Overview
 
 Moderating online content, particularly the *multimodal* combination of text and images in the form of memes, is an extensive and difficult problem for social media and society. This project uses a curated dataset of memes from Facebook AI to detect whether a meme is hateful based on its textual content. The model accurately classifies 61% of memes, with an ROC-AUC of 0.578.
