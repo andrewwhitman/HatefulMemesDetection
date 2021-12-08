@@ -1,5 +1,5 @@
 # Hateful Memes Detection
-![Mean memes from https://ai.facebook.com/blog/hateful-memes-challenge-and-data-set](https://scontent-ort2-1.xx.fbcdn.net/v/t39.2365-6/96215346_2581440138810047_7336682629883756544_n.png?_nc_cat=107&ccb=1-5&_nc_sid=ad8a9d&_nc_ohc=p5xSTm2IWxMAX-q_C84&_nc_ht=scontent-ort2-1.xx&oh=e5c1e3dc76873b31dc7303cb1899e3cb&oe=61AE36B4)
+![Mean memes from https://ai.facebook.com/blog/hateful-memes-challenge-and-data-set](https://github.com/andrewwhitman/HatefulMemesDetection/blob/main/images/facebook_mean_memes.png)
 Photo from [Facebook AI](https://ai.facebook.com/blog/hateful-memes-challenge-and-data-set). These are examples of "mean" memes, not actual hateful memes, which would be distasteful to display.
 
 ## Overview
@@ -43,6 +43,8 @@ To reproduce an environment with the necessary dependencies locally on your comp
 ```
 
 ├── data                           <- placeholder folder for local storage of data
+│   └── ...
+├── images                         <- contains images for README and notebooks
 │   └── ...
 ├── notebooks                      <- contains additional notebooks for data exploration and modeling
 │   └── ...
