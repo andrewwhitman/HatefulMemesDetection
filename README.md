@@ -9,9 +9,9 @@ Moderating online content, particularly the *multimodal* combination of text and
 
 ## Business and Data Understanding
 
-Hate speech in the form of hateful memes is a challenging problem for automatic detection due to its multimodal combination of text and images. The semantic value of a meme is determined by both the text and image and their interaction. Facebook AI has curated a dataset of memes using human annotators to determine a meme's hateful classification. Benign confounders have been created and added to the dataset. These confounders take a meme that is hateful and either changes the text or image to switch the classification from hateful to not-hateful. See this [paper](https://arxiv.org/pdf/2005.04790.pdf) for further details on the curation of the dataset.
+Hate speech in the form of hateful memes is a challenging problem for automatic detection due to its multimodal combination of text and images. The semantic value of a meme is determined by both the text and image and their interaction. Facebook AI has curated a dataset of memes using human annotators to determine a meme's hateful classification. Benign confounders were created and added to the dataset by the researchers. These confounders take a meme that is hateful and either changes the text or image to switch the classification from hateful to not-hateful. See this [paper](https://arxiv.org/pdf/2005.04790.pdf) for further details on the curation of the dataset.
 
-Distinguishing between the two classes is a priority for automatic detection as the consequences of false positives and false negatives are both troublesome. If content removal is based on such detection, removing user content that isn't hateful and keeping up truly hateful content will both be an issue. Therefore, the metrics to prioritize are accuracy and ROC-AUC.
+Distinguishing between the two classes is a priority for automatic detection as the consequences of false positives and false negatives are both troublesome. If content removal is based on such detection, removing user content that isn't hateful and keeping up truly hateful content will both be an issue. Therefore, the metrics to prioritize are accuracy, f1 score, and ROC-AUC.
 
 The data can be retrieved from [Facebook AI's Hateful Memes Challenge](https://hatefulmemeschallenge.com/). See the [Reproducibility](#Reproducibility "Go to Reproducibility") section of this README to access the data.
 
@@ -23,7 +23,9 @@ Only the textual component of a meme is modeled using Naive Bayes classifiers ba
 
 ## Conclusions
 
-The final model can be used in an automatic detection system for hateful memes. Based on the preferences of the end user, the decision boundary can be chosen to prioritize the prevention of either false positives or false negatives. Continued work to incorporate the visual content of a meme is a next step for the project.
+The final model can be used in an automatic detection system for hateful memes. One recommendation is to tag memes predicted as hateful by the final model with a content warning message and blur. In addition, a team could manually review these predicated-hateful memes and either remove content that is truly hateful or restore content that was a false positive. Such manual review would be less of a workload compared to reviewing all memes without a first-pass automated tag. 
+
+Continued work to incorporate the visual content of a meme is a next step for the project, along with using advanced language models like BERT for pre-training.
 
 
 ## Information
