@@ -4,12 +4,12 @@ Photo from [Facebook AI](https://ai.facebook.com/blog/hateful-memes-challenge-an
 
 ## Overview
 
-Moderating online content, particularly the *multimodal* combination of text and images in the form of memes, is a large and difficult problem for social media and society. This project uses a curated dataset of memes from Facebook AI to detect whether a meme is hateful or not based on its content. The model accurately classifies 62% of memes, with an ROC-AUC of 0.579.
+Moderating online content, particularly the *multimodal* combination of text and images in the form of memes, is an extensive and difficult problem for social media and society. This project uses a curated dataset of memes from Facebook AI to detect whether a meme is hateful based on its textual content. The model accurately classifies 61% of memes, with an ROC-AUC of 0.578.
 
 
 ## Business and Data Understanding
 
-Hate speech in the form of hateful memes is a challenging problem for automatic detection due to its multimodal combination of text and images. The semantic value of a meme is determined by both the text and image and their interaction. Facebook AI has curated a dataset of memes using human annotators to determine a meme's hateful classification. Benign confounders have been created and added to the dataset. These confounders take a meme that is hateful and either changes the text or image to switch the classification from hateful to not hateful. See this [paper](https://arxiv.org/pdf/2005.04790.pdf) for further details on the curation of the dataset.
+Hate speech in the form of hateful memes is a challenging problem for automatic detection due to its multimodal combination of text and images. The semantic value of a meme is determined by both the text and image and their interaction. Facebook AI has curated a dataset of memes using human annotators to determine a meme's hateful classification. Benign confounders have been created and added to the dataset. These confounders take a meme that is hateful and either changes the text or image to switch the classification from hateful to not-hateful. See this [paper](https://arxiv.org/pdf/2005.04790.pdf) for further details on the curation of the dataset.
 
 Distinguishing between the two classes is a priority for automatic detection as the consequences of false positives and false negatives are both troublesome. If content removal is based on such detection, removing user content that isn't hateful and keeping up truly hateful content will both be an issue. Therefore, the metrics to prioritize are accuracy and ROC-AUC.
 
@@ -18,7 +18,7 @@ The data can be retrieved from [Facebook AI's Hateful Memes Challenge](https://h
 
 ## Modeling and Evaluation
 
-First, only the textual component of a meme is modeled using Naive Bayes classifiers based on frequency counts and TF-IDF, as well as logistic regression and random forest models based on GloVe word embeddings. The best-performing model of these is a Multinomial Naive Bayes classifier used on text that has been vectorized with frequency counts. This model achieves an accuracy score of 62% on holdout data, while a base rate classification based on the target distribution in the training set achieves an accuracy score of 53% on holdout data.
+Only the textual component of a meme is modeled using Naive Bayes classifiers based on frequency counts and TF-IDF, as well as logistic regression and random forest models based on GloVe word embeddings. The best-performing model of these is a Multinomial Naive Bayes classifier used on text that has been vectorized with frequency counts. This model achieves an accuracy score of 61% on holdout data, while a base rate classification based on the target distribution in the training set achieves an accuracy score of 53% on holdout data.
 
 
 ## Conclusions
